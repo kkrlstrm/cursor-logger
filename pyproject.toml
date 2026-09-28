@@ -1,0 +1,20 @@
+[project]
+name = "cursor-logger"
+version = "0.1.0"
+description = "Telemetry for Cursor's agent, read from Cursor's local state.vscdb. The Cursor sibling of cc-logger and codex-logger."
+requires-python = ">=3.10"
+dependencies = []           # SQLite path is pure stdlib
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.1"]   # only needed for a postgresql:// target
+dev = ["pytest>=7"]
+
+[project.scripts]
+cursor-logger = "cursor_logger.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["cursor_logger"]

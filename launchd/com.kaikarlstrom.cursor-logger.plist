@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.kaikarlstrom.cursor-logger</string>
+
+    <!-- Ingest changed Cursor sessions every 5 minutes. Cheap: unchanged
+         sessions are skipped by lastUpdatedAt + bubble count, so this is near-zero work when idle. -->
+    <key>ProgramArguments</key>
+    <array>
+        <!-- NOT /usr/bin/python3. The system interpreter has no psycopg, and
+             store_pg imports it lazily, so a Postgres-backed run would fail
+             only at write time, every 5 minutes, while still exiting 0. -->
+        <string>/Library/Frameworks/Python.framework/Versions/3.13/bin/python3</string>
+        <string>-m</string>
+        <string>cursor_logger</string>
+        <string>ingest</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/kaikarlstrom/kai-gtm-agents/cursor-logger</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <!-- Left empty on purpose: the DSN is a secret and must not be
+             committed here. open_store() falls back to NEON_TELEMETRY_URL in
+             the repo .env, which is the single place that value lives. Set
+             this only to override that for a one-off run. -->
+        <key>CURSOR_LOGGER_DB</key>
+        <string></string>
+    </dict>
+
+    <key>StartInterval</key>
+    <integer>300</integer>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/kaikarlstrom/Library/Logs/cursor-logger.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/kaikarlstrom/Library/Logs/cursor-logger.err.log</string>
+</dict>
+</plist>
